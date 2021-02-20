@@ -22,9 +22,9 @@ class GoProDataset(Dataset):
         self.root_dir = root_dir
         self.transform = transform        
         self.crop = crop
-        self.crop_size = crop_size
-        self.multi_scale = multi_scale
-        self.rotation = rotation
+        self.crop_size = crop_size  # 256
+        self.multi_scale = multi_scale  # False
+        self.rotation = rotation  
         self.color_augment = color_augment
         self.rotate90 = transforms.RandomRotation(90)  
         self.rotate45 = transforms.RandomRotation(45)    
@@ -53,18 +53,18 @@ class GoProDataset(Dataset):
             sharp_image = transforms.functional.adjust_saturation(sharp_image, sat_factor)
             
         if self.transform:
-            blur_image = self.transform(blur_image)
-            sharp_image = self.transform(sharp_image)
+            blur_image = self.transform(blur_image)    #(3,720,1280)
+            sharp_image = self.transform(sharp_image)  #(3,720,1280)
 
         if self.crop:
-            W = blur_image.size()[1]
-            H = blur_image.size()[2] 
+            W = blur_image.size()[1]  #720
+            H = blur_image.size()[2]  #1280
 
             Ws = np.random.randint(0, W-self.crop_size-1, 1)[0]
             Hs = np.random.randint(0, H-self.crop_size-1, 1)[0]
             
-            blur_image = blur_image[:,Ws:Ws+self.crop_size,Hs:Hs+self.crop_size]
-            sharp_image = sharp_image[:,Ws:Ws+self.crop_size,Hs:Hs+self.crop_size]
+            blur_image = blur_image[:,Ws:Ws+self.crop_size,Hs:Hs+self.crop_size]   #(3,256,256)
+            sharp_image = sharp_image[:,Ws:Ws+self.crop_size,Hs:Hs+self.crop_size] #(3,256,256)
                        
         if self.multi_scale:
             H = sharp_image.size()[1]
