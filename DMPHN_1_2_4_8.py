@@ -147,14 +147,14 @@ def main():
         train_dataloader = DataLoader(train_dataset, batch_size = BATCH_SIZE, shuffle=True)
         start = 0
         
-        for iteration, images in enumerate(train_dataloader):            
+        for iteration, images in enumerate(train_dataloader): # images：{(3,256,256),(3,256,256)}           
             mse = nn.MSELoss().cuda(GPU)            
             
-            gt = Variable(images['sharp_image'] - 0.5).cuda(GPU)
-            H = gt.size(2)          
-            W = gt.size(3)
-            
-            images_lv1 = Variable(images['blur_image'] - 0.5).cuda(GPU)
+            gt = Variable(images['sharp_image'] - 0.5).cuda(GPU) #(2,3,256,256)
+            H = gt.size(2) #256          
+            W = gt.size(3) #256
+            # 将图片划分为1，2，4，8个小块
+            images_lv1 = Variable(images['blur_image'] - 0.5).cuda(GPU) #(2,3,256,256)
             images_lv2_1 = images_lv1[:,:,0:int(H/2),:]
             images_lv2_2 = images_lv1[:,:,int(H/2):H,:]
             images_lv3_1 = images_lv2_1[:,:,:,0:int(W/2)]
